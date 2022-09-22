@@ -1,31 +1,40 @@
 package com.example.testapplication
 
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.widget.TextView
 
-class MainActivity : AppCompatActivity() {
-    var simpleJSONModel = SimpleJSONModel(null, null)
-    val fragmentLoading = FragmentLoading()
-    val webWiewFragment = WebWiewFragment.newInstance()
+@SuppressLint("StaticFieldLeak")
+val webWiewFragment = WebWiewFragment()
+val fragmentLoading = FragmentLoading()
+var simpleJSONModel = SimpleJSONModel(null, null)
+val retrofit = Retrofit()
+
+open class MainActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val retrofit = Retrofit()
-
         if (savedInstanceState == null) {
-            retrofit.parseJSON { model ->
-                simpleJSONModel = model
-                startfirstfragment()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    if (simpleJSONModel.link != null) {
-                        starttwofragment()
-                    }
-                }, 1000)
-            }
+            retrofit.parseJSON()
+            startfirstfragment()
+            Handler(Looper.getMainLooper()).postDelayed({
+                if (retrofit.success) {
+                    starttwofragment()
+                } else noConectToServer()
+            }, 2000)
         }
+
+    }
+
+    @SuppressLint("SetTextI18n")
+    fun noConectToServer() {
+        val text = findViewById<TextView>(R.id.textView)
+        text.text = "No connection to server"
     }
 
     fun startfirstfragment() {
@@ -41,5 +50,4 @@ class MainActivity : AppCompatActivity() {
             commit()
         }
     }
-
 }

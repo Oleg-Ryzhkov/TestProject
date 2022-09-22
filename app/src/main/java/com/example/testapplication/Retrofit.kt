@@ -1,18 +1,19 @@
 package com.example.testapplication
 
 
-import android.util.Log
+import android.os.Handler
+import android.os.Looper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.lang.Exception
-
 
 class Retrofit {
-    fun parseJSON(callback:(SimpleJSONModel)->Unit) {
+
+    var success = false
+    fun parseJSON() {
         val retrofit = Retrofit.Builder()
             .baseUrl("https://efs5i1ube5.execute-api.eu-central-1.amazonaws.com/prod/")
             .addConverterFactory(GsonConverterFactory.create())
@@ -28,19 +29,15 @@ class Retrofit {
 
                     val items = response.body()
                     if (items != null) {
-
-                          val link = items.link.toString()
-                          val home = items.home.toString()
-                          callback(SimpleJSONModel(link, home))
+                        simpleJSONModel.link = items.link
+                        simpleJSONModel.home = items.home
+                        success = true
                     }
 
                 } else {
-
-                    Log.e("RETROFIT_ERROR", response.code().toString())
-                     throw Exception()
+                    success = false
                 }
             }
         }
-
     }
 }

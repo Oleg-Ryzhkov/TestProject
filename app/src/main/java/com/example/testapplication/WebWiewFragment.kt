@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,9 +13,7 @@ import android.webkit.WebViewClient
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 
-
 class WebWiewFragment : Fragment() {
-    lateinit var simpleJSONModel: SimpleJSONModel
     private lateinit var myWebView: WebView
     private lateinit var sharedPreferences: SharedPreferences
     override fun onCreateView(
@@ -26,10 +25,10 @@ class WebWiewFragment : Fragment() {
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        simpleJSONModel = (requireActivity() as MainActivity).simpleJSONModel
         sharedPreferences = requireActivity().getPreferences(MODE_PRIVATE)
         myWebView = view.findViewById(R.id.mywebwiew)
 
+        Log.e("link", simpleJSONModel.link.toString())
         if (savedInstanceState == null) {
             val savedLink = sharedPreferences.getString("saveurl", null)
             if (savedLink != null) {
@@ -63,7 +62,7 @@ class WebWiewFragment : Fragment() {
 
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if(myWebView.canGoBack()){
+                if (myWebView.canGoBack()) {
                     myWebView.goBack()
                 } else {
                     isEnabled = false
@@ -71,21 +70,13 @@ class WebWiewFragment : Fragment() {
                 }
             }
         }
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,callback)
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, callback)
     }
-
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         myWebView.saveState(outState)
-
     }
-
-    companion object {
-        @JvmStatic
-        fun newInstance() = WebWiewFragment()
-    }
-
 }
 
 

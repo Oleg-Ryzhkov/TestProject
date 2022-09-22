@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 
-
 class FragmentLoading : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -14,4 +13,5 @@ class FragmentLoading : Fragment() {
     ): View? {
         return inflater.inflate(R.layout.fragment_loading, container, false)
     }
+
 }
